@@ -1,0 +1,23 @@
+name: Setup RDP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  setup_rdp:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup RDP
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y powershell
+          pwsh scripts/setup_rdp.ps1
+        env:
+          WINRM_USERNAME: ${{ secrets.WINRM_USERNAME }}
+          WINRM_PASSWORD: ${{ secrets.WINRM_PASSWORD }}
