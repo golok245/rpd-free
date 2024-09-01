@@ -13,11 +13,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup RDP
+      - name: Install PowerShell
         run: |
           sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https software-properties-common
+          wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -cs)/prod.list"
+          sudo cp prod.list /etc/apt/sources.list.d/mssql-release.list
+          sudo apt-get update
           sudo apt-get install -y powershell
-          pwsh scripts/setup_rdp.ps1
-        env:
-          WINRM_USERNAME: ${{ secrets.WINRM_USERNAME }}
-          WINRM_PASSWORD: ${{ secrets.WINRM_PASSWORD }}
+
+      - name: Run PowerShell script
+        run: pwsh scripts/setup_rdp.ps1
+        # Uncomment if you have specific environment variables for PowerShell script
+        # env:
+        #   WINRM_USERNAME: ${{ secrets.WINRM_USERNAME }}
+        #   WINRM_PASSWORD: ${{ secrets.WINRM_PASSWORD }}
